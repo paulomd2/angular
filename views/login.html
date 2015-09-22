@@ -1,0 +1,13 @@
+<div class="login">
+            <div class="box-login">
+<!--             <img src="img/logo.png" alt="" /> -->
+            <form ng-submit="signin(user)">
+                <label for="username">Username:</label>
+                <input type="text" ng-model="user.username" />
+                <label for="password">Password:</label>
+                <input type="password" ng-model="user.password" />
+                <button>Login</button>
+            </form>
+            {{user}}
+        </div>
+</div>
