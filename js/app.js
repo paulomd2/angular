@@ -1,36 +1,26 @@
 'user strict';
 (function () {
-    angular.module('ControlMidia', [])
+    angular.module('ControlMidia', ['ngRoute'])
 
-            .config('routeProvider', function ($routeProvider) {
+            .config(function ($routeProvider) {
                 $routeProvider
-                .when('/', {
-                    templateUrl: 'login.html'
+                .when('/login', {
+                    templateUrl: 'views/login.html',
+                    controller: 'loginCtrl'
                 })
-                .when('/cliente', {
-                    resolve: {
-                        "check": function ($location, $rootScope) {
-                            if (!$rootScope.loggedIn) {
-                                $location.path('/');
-                            }
-                        }
-                    },
-                    templateUrl: '/cliente.html'
-                })
-                .otherwise({
-                    redirectTo: '/'
-                })
+                .otherwise({redirectTo: '/login'})
             })
 
-            .controller('loginCtrl', function ($scope, $http, $location, $rootScope) {
-                $scope.submit = function () {
+            .controller('loginCtrl', function ($scope, $location, Service) {
+                $scope.user = {}
+                $scope.signin = function (user) {
                     var data = {
                         opcao: 'checaUsuario',
-                        usuario: $scope.username,
-                        senha: $scope.password,
+                        usuario: user.username,
+                        senha: user.password,
                     };
 
-                    $http.post('./control/usuariosControle.php', data).then(function (response) {
+                    Service.login(data).then(function (response) {
                         var resposta = response.data;
 
                         if (resposta !== 0) {
@@ -44,6 +34,14 @@
                             alert('Usuário ou senha inválidos!');
                         }
                     });
-                };
-            });
+                 };
+           })
+
+            .factory('Service', function($http){
+                return {
+                    login: function(user){
+                        return $http.post('./control/usuariosControle.php', data);
+                    };
+                }
+            }])
 })();
